@@ -1,4 +1,3 @@
-// app/ai-news-daily/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -15,7 +14,7 @@ export default function AiNewsPage() {
 
         // Ensure data has the 'message' field and it is a string to split
         if (data && typeof data.message === 'string') {
-          const lines = data.message.split('\n').filter((line) => line.trim() !== '');
+          const lines = data.message.split('\n').filter((line: string) => line.trim() !== '');
           setAiNews(lines);
         } else {
           throw new Error('Invalid data format: message field is missing or not a string.');
