@@ -5,6 +5,12 @@ import { PieChart, Pie, Tooltip, Cell, LineChart, Line, CartesianGrid, XAxis, YA
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+// Define the type for the structure of rows in the response
+interface AnalyticsRow {
+  dimensionValues: { value: string }[];
+  metricValues: { value: string }[];
+}
+
 export default function DashboardPage() {
   const [visitCount, setVisitCount] = useState(0);
   const [realtimeUsers, setRealtimeUsers] = useState(0);
@@ -25,7 +31,7 @@ export default function DashboardPage() {
         setPageViews(parseInt(views));
 
         // Handle country-level data
-        const countryStats = data.rows?.map((row) => ({
+        const countryStats = (data.rows as AnalyticsRow[])?.map((row) => ({
           name: row.dimensionValues[0]?.value || "Unknown",
           value: parseInt(row.metricValues[0]?.value) || 0,
         })) || [];
