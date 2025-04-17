@@ -4,16 +4,22 @@ export default withAuth({
   callbacks: {
     authorized: ({ token }) => {
       const allowedEmails = ["desmond.marshall@gmail.com"];
-      const allowedDomains = ["rougevc.com", "RLSCLUB.com"];
-      
-      // Ensure token?.email is a string before using endsWith
-      const email = token?.email ?? ''; // Default to empty string if null or undefined
+      const allowedDomains = ["rougevc.com", "rlsclub.com"];
+      const allowedEmailPatterns = [/\.rouge@gmail\.com$/]; // Regex pattern
 
-      // Allow access if email is in the allowed list or ends with allowed domain
-      return (
-        allowedEmails.includes(email) ||
-        allowedDomains.some((domain) => email.endsWith(`@${domain}`))
+      const email = token?.email?.toLowerCase().trim() ?? "";
+
+      const isAllowedEmail = allowedEmails.includes(email);
+
+      const isAllowedDomain = allowedDomains.some((domain) =>
+        email.endsWith(`@${domain}`)
       );
+
+      const matchesPattern = allowedEmailPatterns.some((pattern) =>
+        pattern.test(email)
+      );
+
+      return isAllowedEmail || isAllowedDomain || matchesPattern;
     },
   },
 });

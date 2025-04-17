@@ -9,21 +9,28 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    // This callback is triggered after the user signs in
     async signIn({ user }) {
-      // Allow @rougevc.com, @RLSCLUB.com, and specific email addresses
+      const email = user.email?.toLowerCase().trim();
       const allowedEmails = ["desmond.marshall@gmail.com"];
-      const allowedDomains = ["rougevc.com", "RLSCLUB.com"];
+      const allowedDomains = ["rougevc.com", "rlsclub.com"];
+      const allowedEmailPatterns = [/\.rouge@gmail\.com$/]; // Regex pattern
 
-      // Check if the email ends with the allowed domains or is in the allowed list
-      if (
-        allowedEmails.includes(user.email!) ||
-        allowedDomains.some((domain) => user.email?.endsWith(`@${domain}`))
-      ) {
-        return true; // Allow access
+      if (!email) return "/unauthorized";
+
+      const isAllowedEmail = allowedEmails.includes(email);
+
+      const isAllowedDomain = allowedDomains.some((domain) =>
+        email.endsWith(`@${domain}`)
+      );
+
+      const matchesPattern = allowedEmailPatterns.some((pattern) =>
+        pattern.test(email)
+      );
+
+      if (isAllowedEmail || isAllowedDomain || matchesPattern) {
+        return true;
       }
-      
-      // If email doesn't match, redirect to the unauthorized page
+
       return "/unauthorized";
     },
   },
