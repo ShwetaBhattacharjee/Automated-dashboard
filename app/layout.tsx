@@ -1,8 +1,13 @@
 "use client";
+
 import { SessionProvider } from "next-auth/react";
 import Navbar from "./components/Navbar";
 import "./globals.css";
 import ChatbotWidget from "./components/ChatbotWidget";
+import Script from "next/script";
+
+const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+
 export default function RootLayout({
   children,
 }: {
@@ -10,11 +15,36 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* ✅ Google Analytics Script */}
+        {GA_TRACKING_ID && (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+            />
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
+      </head>
       <body>
         <SessionProvider>
           <Navbar />
           {children}
-          <ChatbotWidget /> 
+          <ChatbotWidget />
         </SessionProvider>
       </body>
     </html>
