@@ -6,8 +6,7 @@ import "./globals.css";
 import ChatbotWidget from "./components/ChatbotWidget";
 import Script from "next/script";
 
-// Replace with your Measurement ID from GA4
-const GA_TRACKING_ID = "G-J9Z0E5QMLS";
+const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
 export default function RootLayout({
   children,

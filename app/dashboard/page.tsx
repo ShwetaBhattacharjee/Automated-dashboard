@@ -1,15 +1,10 @@
-// /dashboard/page.tsx
-
-"use client"; // Assuming LookerEmbed uses client-side features
-
+// app/dashboard/page.tsx or wherever your dashboard lives
 import LookerEmbed from "../components/LookerEmbed";
 
 export default function DashboardPage() {
   return (
-    <section className="mt-12">
-      <h2 className="text-xl font-semibold">
-        Advanced Dashboard (Looker Studio)
-      </h2>
+    <section className="mt-12 px-6">
+      <h2 className="text-2xl font-bold mb-4">Analytics Dashboard</h2>
       <LookerEmbed />
     </section>
   );
