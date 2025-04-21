@@ -1,10 +1,10 @@
 export default function BRUnitPage() {
   return (
-    <main className="p-6">
-      <h1 className="text-3xl font-bold mb-4">BR Unit Dashboard</h1>
+    <main className="p-0 m-0 h-screen w-screen">
       <iframe
         src="https://br-automation.vercel.app"
-        className="w-full h-[80vh] border rounded-xl"
+        className="w-full h-full border-none"
+        title="BR Unit Dashboard"
       />
     </main>
   );
