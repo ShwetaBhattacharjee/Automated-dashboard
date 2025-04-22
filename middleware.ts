@@ -3,13 +3,10 @@ import { withAuth } from "next-auth/middleware";
 export default withAuth({
   callbacks: {
     authorized: ({ token }) => {
-      const allowedEmails = ["desmond.marshall@gmail.com"];
       const allowedDomains = ["rougevc.com", "rlsclub.com"];
-      const allowedEmailPatterns = [/\.rouge@gmail\.com$/]; // Regex pattern
+      const allowedEmailPatterns = [/\.rouge@gmail\.com$/]; // Regex pattern for .rouge@gmail.com
 
       const email = token?.email?.toLowerCase().trim() ?? "";
-
-      const isAllowedEmail = allowedEmails.includes(email);
 
       const isAllowedDomain = allowedDomains.some((domain) =>
         email.endsWith(`@${domain}`)
@@ -19,11 +16,11 @@ export default withAuth({
         pattern.test(email)
       );
 
-      return isAllowedEmail || isAllowedDomain || matchesPattern;
+      return isAllowedDomain || matchesPattern;
     },
   },
 });
 
 export const config = {
-  matcher: ["/dashboard", "/br", "/influencer", "/about", "/contact"],
+  matcher: [ "/dashboard", "/states", "/ai-news-daily", "/contact"],
 };
