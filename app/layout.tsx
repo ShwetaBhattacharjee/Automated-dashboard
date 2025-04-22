@@ -1,7 +1,7 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Navbar"; // Update to import Sidebar
 import "./globals.css";
 import ChatbotWidget from "./components/ChatbotWidget";
 import Script from "next/script";
@@ -41,8 +41,7 @@ export default function RootLayout({
       </head>
       <body>
         <SessionProvider>
-          <Navbar />
-          {children}
+          <Sidebar>{children}</Sidebar>
           <ChatbotWidget />
         </SessionProvider>
       </body>

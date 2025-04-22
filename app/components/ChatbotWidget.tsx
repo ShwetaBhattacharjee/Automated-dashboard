@@ -19,7 +19,7 @@ export default function ChatbotWidget() {
 
       {/* Chatbot Modal */}
       {isOpen && (
-        <div className="fixed bottom-20 right-6 z-50 w-[360px] h-[480px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-300">
+        <div className="fixed bottom-24 right-6 z-50 w-[360px] h-[480px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-300">
           <iframe
             src="https://chatbotai-tan-six.vercel.app/"
             title="Chatbot"
