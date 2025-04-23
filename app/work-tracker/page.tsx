@@ -22,6 +22,7 @@ export default function WorkTracker() {
   const [data, setData] = useState<WorkItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleCount, setVisibleCount] = useState<number>(10);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [form, setForm] = useState<WorkItem>({
     unit: "",
@@ -38,8 +39,13 @@ export default function WorkTracker() {
     try {
       const res = await axios.get("/api/tracker");
       setData(res.data);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
+    } catch (error: any) {
+      console.error(
+        "Failed to fetch data:",
+        error.message,
+        error.response?.status
+      );
+      setErrorMessage("Failed to load data. Please try again.");
     }
   };
 
@@ -61,6 +67,7 @@ export default function WorkTracker() {
   };
 
   const handleSubmit = async () => {
+    setErrorMessage(""); // Clear previous errors
     try {
       if (form._id) {
         await axios.put(`/api/tracker/${form._id}`, form);
@@ -78,13 +85,25 @@ export default function WorkTracker() {
         memberUpdate: "",
       });
       fetchData();
-    } catch (error) {
-      console.error("Failed to submit data:", error);
+    } catch (error: any) {
+      console.error(
+        "Failed to submit data:",
+        error.message,
+        error.response?.status
+      );
+      if (error.response?.status === 504) {
+        setErrorMessage(
+          "Request timed out. Please try again or contact support."
+        );
+      } else {
+        setErrorMessage("Failed to add/update item. Please try again.");
+      }
     }
   };
 
   const handleEdit = (item: WorkItem) => {
     setForm(item);
+    setErrorMessage("");
   };
 
   const handleDelete = async (id?: string) => {
@@ -93,8 +112,13 @@ export default function WorkTracker() {
         await axios.delete(`/api/tracker/${id}`);
         fetchData();
       }
-    } catch (error) {
-      console.error("Failed to delete data:", error);
+    } catch (error: any) {
+      console.error(
+        "Failed to delete data:",
+        error.message,
+        error.response?.status
+      );
+      setErrorMessage("Failed to delete item. Please try again.");
     }
   };
 
@@ -128,6 +152,12 @@ export default function WorkTracker() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="mb-6 w-full p-3 rounded-lg bg-[#1f1f1f] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
+        {errorMessage && (
+          <div className="mb-4 p-3 bg-red-600 text-white rounded-lg text-center">
+            {errorMessage}
+          </div>
+        )}
 
         <div className="bg-[#1a1a1a] p-6 rounded-xl mb-10 shadow-lg">
           <div className="grid sm:grid-cols-4 gap-4">
@@ -243,7 +273,7 @@ export default function WorkTracker() {
               onClick={() => setVisibleCount(visibleCount + 10)}
               className="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg"
             >
-              See More...
+              See More..
             </button>
           </div>
         )}
