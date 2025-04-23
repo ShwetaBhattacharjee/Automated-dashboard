@@ -9,7 +9,13 @@ let client: MongoClient;
 
 // Extend globalThis type to include _mongoClientPromise
 declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
+  // This just declares the type, does NOT use var
+  // Correct way to augment the global scope
+  namespace NodeJS {
+    interface Global {
+      _mongoClientPromise?: Promise<MongoClient>;
+    }
+  }
 }
 
 // Create the client and store the promise globally if not already defined
