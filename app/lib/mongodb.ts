@@ -5,7 +5,7 @@ const uri = process.env.MONGODB_URI || "mongodb+srv://a3:rouge1234@cluster0.mjpa
 const options = {};
 
 let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+const clientPromise: Promise<MongoClient>;
 
 declare global {
   const _mongoClientPromise: Promise<MongoClient> | undefined;
