@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -39,7 +39,7 @@ export default function WorkTracker() {
     try {
       const res = await axios.get("/api/tracker");
       setData(res.data);
-    } catch (error: any) {
+    } catch (error: AxiosError) {
       console.error(
         "Failed to fetch data:",
         error.message,
@@ -85,7 +85,7 @@ export default function WorkTracker() {
         memberUpdate: "",
       });
       fetchData();
-    } catch (error: any) {
+    } catch (error: AxiosError) {
       console.error(
         "Failed to submit data:",
         error.message,
@@ -109,10 +109,10 @@ export default function WorkTracker() {
   const handleDelete = async (id?: string) => {
     try {
       if (id) {
-        await axios.delete(`/api/tracker/${id}`);
+        await axios.delete(`/api/tracker?id=${id}`);
         fetchData();
       }
-    } catch (error: any) {
+    } catch (error: AxiosError) {
       console.error(
         "Failed to delete data:",
         error.message,
