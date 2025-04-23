@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // Type for work item
 type WorkItem = {
@@ -33,8 +35,12 @@ export default function WorkTracker() {
   });
 
   const fetchData = async () => {
-    const res = await axios.get("/api/tracker");
-    setData(res.data);
+    try {
+      const res = await axios.get("/api/tracker");
+      setData(res.data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
   };
 
   useEffect(() => {
@@ -47,23 +53,34 @@ export default function WorkTracker() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
-    if (form._id) {
-      await axios.put(`/api/tracker/${form._id}`, form);
-    } else {
-      await axios.post("/api/tracker", form);
-    }
+  const handleDateChange = (date: Date | null, name: string) => {
     setForm({
-      unit: "",
-      task: "",
-      assignedTo: "",
-      status: "To Do",
-      lastUpdated: new Date().toISOString(),
-      deadline: "",
-      workStart: "",
-      memberUpdate: "",
+      ...form,
+      [name]: date ? date.toISOString().split("T")[0] : "",
     });
-    fetchData();
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (form._id) {
+        await axios.put(`/api/tracker/${form._id}`, form);
+      } else {
+        await axios.post("/api/tracker", form);
+      }
+      setForm({
+        unit: "",
+        task: "",
+        assignedTo: "",
+        status: "To Do",
+        lastUpdated: new Date().toISOString(),
+        deadline: "",
+        workStart: "",
+        memberUpdate: "",
+      });
+      fetchData();
+    } catch (error) {
+      console.error("Failed to submit data:", error);
+    }
   };
 
   const handleEdit = (item: WorkItem) => {
@@ -71,9 +88,13 @@ export default function WorkTracker() {
   };
 
   const handleDelete = async (id?: string) => {
-    if (id) {
-      await axios.delete(`/api/tracker/${id}`);
-      fetchData();
+    try {
+      if (id) {
+        await axios.delete(`/api/tracker/${id}`);
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Failed to delete data:", error);
     }
   };
 
@@ -110,14 +131,7 @@ export default function WorkTracker() {
 
         <div className="bg-[#1a1a1a] p-6 rounded-xl mb-10 shadow-lg">
           <div className="grid sm:grid-cols-4 gap-4">
-            {[
-              "unit",
-              "task",
-              "assignedTo",
-              "deadline",
-              "workStart",
-              "memberUpdate",
-            ].map((name) => (
+            {["unit", "task", "assignedTo", "memberUpdate"].map((name) => (
               <input
                 key={name}
                 name={name}
@@ -127,6 +141,20 @@ export default function WorkTracker() {
                 className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             ))}
+            <DatePicker
+              selected={form.workStart ? new Date(form.workStart) : null}
+              onChange={(date) => handleDateChange(date, "workStart")}
+              placeholderText="Work Start (Task Begin Date)"
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              dateFormat="yyyy-MM-dd"
+            />
+            <DatePicker
+              selected={form.deadline ? new Date(form.deadline) : null}
+              onChange={(date) => handleDateChange(date, "deadline")}
+              placeholderText="Deadline (Task Due Date)"
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              dateFormat="yyyy-MM-dd"
+            />
             <select
               name="status"
               value={form.status}
