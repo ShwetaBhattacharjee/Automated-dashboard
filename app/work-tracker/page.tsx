@@ -18,7 +18,6 @@ type WorkItem = {
 
 export default function WorkTracker() {
   const [data, setData] = useState<WorkItem[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleCount, setVisibleCount] = useState<number>(10);
 
@@ -64,13 +63,11 @@ export default function WorkTracker() {
       workStart: "",
       memberUpdate: "",
     });
-    setEditingId(null);
     fetchData();
   };
 
   const handleEdit = (item: WorkItem) => {
     setForm(item);
-    setEditingId(item._id || null);
   };
 
   const handleDelete = async (id?: string) => {
@@ -124,7 +121,7 @@ export default function WorkTracker() {
               <input
                 key={name}
                 name={name}
-                value={(form as any)[name]}
+                value={form[name as keyof WorkItem]}
                 onChange={handleChange}
                 placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
                 className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
