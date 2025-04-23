@@ -15,7 +15,7 @@ interface ApiResponse {
 }
 
 /**
- * ok
+ *
  */
 const NewsSkeleton = () => (
   <div className="grid gap-4">
@@ -28,7 +28,7 @@ const NewsSkeleton = () => (
   </div>
 );
 /**
- * ok
+ *
  */
 /**
  * Individual news item component with image preview

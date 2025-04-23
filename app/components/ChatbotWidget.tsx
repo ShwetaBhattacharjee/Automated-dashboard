@@ -23,13 +23,13 @@ export default function ChatbotWidget() {
           <iframe
             src="https://chatbotai-tan-six.vercel.app/"
             title="Chatbot"
-            className="w-full h-full border-none"
+            className="w-full h-full border-none rounded-2xl"
             style={{
-              margin: "0px",
-              padding: "0px",
+              margin: 0,
+              padding: 0,
               display: "block",
             }}
-            scrolling="no"
+            scrolling="yes"
           />
         </div>
       )}
