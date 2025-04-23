@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, memo } from "react";
-import { Loader2, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Interfaces for type safety
@@ -15,7 +15,7 @@ interface ApiResponse {
 }
 
 /**
- * Skeleton loader component for news items
+ * ok
  */
 const NewsSkeleton = () => (
   <div className="grid gap-4">
@@ -27,7 +27,9 @@ const NewsSkeleton = () => (
     ))}
   </div>
 );
-
+/**
+ * ok
+ */
 /**
  * Individual news item component with image preview
  */
