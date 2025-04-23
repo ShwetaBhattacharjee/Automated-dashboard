@@ -8,7 +8,7 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
+  const _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 if (!global._mongoClientPromise) {
