@@ -1,8 +1,10 @@
+import Link from "next/link";
+
 export default function Dashboard() {
   const tools = [
     {
       name: "BR Unit Automation",
-      url: "https://br-automate.vercel.app/",
+      href: "/br",
       description:
         "A powerful internal automation tool designed to streamline BR Unit's data collection, report generation, and workflow processes. Enables team members to focus on strategy while the tool handles repetitive tasks.",
       unit: "Developed specifically for BR Unit operations",
@@ -10,7 +12,7 @@ export default function Dashboard() {
     },
     {
       name: "Influencer Content Generator",
-      url: "https://influencer-content-generation-automation.vercel.app/",
+      href: "/influencer/content-generator",
       description:
         "An AI-driven assistant that helps create engaging LinkedIn content using user prompts and contextual intelligence. Ideal for marketers and personal brand builders who need to post consistently.",
       unit: "Built for Influencer Unit to scale LinkedIn presence",
@@ -18,11 +20,19 @@ export default function Dashboard() {
     },
     {
       name: "Article Summariser",
-      url: "https://influencer-unit-automation-article-h99b.onrender.com/",
+      href: "/influencer/article-summariser",
       description:
         "This tool leverages AI to condense long-form articles into digestible summaries and key takeaways. Useful for creating internal briefs or drafting content for newsletters and social posts.",
       unit: "Designed for Influencer Unit to speed up content research",
       statsLink: "/stats/article-summariser",
+    },
+    {
+      name: "Work Tracker",
+      href: "/work-tracker",
+      description:
+        "A collaboration space to monitor and update progress on tasks across internal units. Easily track who's doing what, their current status, and more — all from within the dashboard.",
+      unit: "Internal tool for all units to coordinate ongoing work",
+      statsLink: null,
     },
   ];
 
@@ -46,14 +56,12 @@ export default function Dashboard() {
                 <p className="text-gray-500 text-xs italic">{tool.unit}</p>
               </div>
               <div className="mt-6 flex justify-center gap-3">
-                <a
-                  href={tool.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={tool.href}
                   className="bg-black text-white px-4 py-2 text-sm rounded-md hover:bg-gray-800"
                 >
                   Open Tool
-                </a>
+                </Link>
                 {tool.statsLink && (
                   <a
                     href={tool.statsLink}
