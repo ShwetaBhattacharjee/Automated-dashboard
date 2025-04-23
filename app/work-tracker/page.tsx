@@ -243,7 +243,7 @@ export default function WorkTracker() {
               onClick={() => setVisibleCount(visibleCount + 10)}
               className="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg"
             >
-              See More..
+              See More...
             </button>
           </div>
         )}
