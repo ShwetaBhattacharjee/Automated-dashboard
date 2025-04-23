@@ -1,28 +1,21 @@
 // lib/mongodb.ts
 import { MongoClient } from "mongodb";
 
-const uri =
-  "mongodb+srv://a3:rouge1234@cluster0.mjpaoju.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGODB_URI || "mongodb+srv://a3:rouge1234@cluster0.mjpaoju.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const options = {};
 
 let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
 
-// Fix global type for Node.js to avoid ESLint error
 declare global {
-  // Must match the actual `globalThis` object
-  // NOT using "var" here avoids the error
-  const _mongoClientPromise: Promise<MongoClient> | undefined;
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-const globalWithMongo = global as typeof globalThis & {
-  _mongoClientPromise?: Promise<MongoClient>;
-};
-
-if (!globalWithMongo._mongoClientPromise) {
+if (!global._mongoClientPromise) {
   client = new MongoClient(uri, options);
-  globalWithMongo._mongoClientPromise = client.connect();
+  global._mongoClientPromise = client.connect();
 }
 
-const finalClientPromise = globalWithMongo._mongoClientPromise!;
+clientPromise = global._mongoClientPromise;
 
-export default finalClientPromise;
+export default clientPromise;
