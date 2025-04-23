@@ -3,9 +3,8 @@ import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 // PUT: Update a specific work tracker item
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { params } = context;
     const client = await clientPromise;
     const db = client.db("dashboard");
     const collection = db.collection("worktracker");
@@ -29,9 +28,8 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 }
 
 // DELETE: Remove a specific work tracker item
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { params } = context;
     const client = await clientPromise;
     const db = client.db("dashboard");
     const collection = db.collection("worktracker");
