@@ -7,9 +7,9 @@ const options = {};
 
 let client: MongoClient;
 
+// Extend globalThis type to include _mongoClientPromise
 declare global {
-  // Use let instead of var to avoid ESLint error
-  let _mongoClientPromise: Promise<MongoClient> | undefined;
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 // Create the client and store the promise globally if not already defined
