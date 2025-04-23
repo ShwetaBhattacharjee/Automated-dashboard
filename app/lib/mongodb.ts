@@ -5,12 +5,16 @@ const uri = "mongodb+srv://a3:rouge1234@cluster0.mjpaoju.mongodb.net/?retryWrite
 const options = {};
 
 let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+const clientPromise: Promise<MongoClient>;
+
+declare global {
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
+}
 
 if (!global._mongoClientPromise) {
   client = new MongoClient(uri, options);
   global._mongoClientPromise = client.connect();
 }
-clientPromise = global._mongoClientPromise;
+const finalClientPromise = global._mongoClientPromise!;
 
-export default clientPromise;
+export default finalClientPromise;
