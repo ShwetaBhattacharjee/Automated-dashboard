@@ -7,23 +7,22 @@ const options = {};
 
 let client: MongoClient;
 
-// Extend globalThis type to include _mongoClientPromise
+// Fix global type for Node.js to avoid ESLint error
 declare global {
-  // This just declares the type, does NOT use var
-  // Correct way to augment the global scope
-  namespace NodeJS {
-    interface Global {
-      _mongoClientPromise?: Promise<MongoClient>;
-    }
-  }
+  // Must match the actual `globalThis` object
+  // NOT using "var" here avoids the error
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-// Create the client and store the promise globally if not already defined
-if (!global._mongoClientPromise) {
+const globalWithMongo = global as typeof globalThis & {
+  _mongoClientPromise?: Promise<MongoClient>;
+};
+
+if (!globalWithMongo._mongoClientPromise) {
   client = new MongoClient(uri, options);
-  global._mongoClientPromise = client.connect();
+  globalWithMongo._mongoClientPromise = client.connect();
 }
 
-const finalClientPromise = global._mongoClientPromise!;
+const finalClientPromise = globalWithMongo._mongoClientPromise!;
 
 export default finalClientPromise;
