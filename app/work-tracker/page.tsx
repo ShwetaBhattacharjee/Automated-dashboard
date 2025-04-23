@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Pencil, Trash2, Plus } from "lucide-react";
@@ -19,6 +18,7 @@ type WorkItem = {
 
 export default function WorkTracker() {
   const [data, setData] = useState<WorkItem[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleCount, setVisibleCount] = useState<number>(10);
 
@@ -64,11 +64,13 @@ export default function WorkTracker() {
       workStart: "",
       memberUpdate: "",
     });
+    setEditingId(null);
     fetchData();
   };
 
   const handleEdit = (item: WorkItem) => {
     setForm(item);
+    setEditingId(item._id || null);
   };
 
   const handleDelete = async (id?: string) => {
@@ -106,130 +108,120 @@ export default function WorkTracker() {
           placeholder="Search by unit, task, assignee, status..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full mb-6 px-4 py-2 rounded bg-gray-800 text-white"
+          className="mb-6 w-full p-3 rounded-lg bg-[#1f1f1f] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {filteredData.slice(0, visibleCount).map((item) => (
-            <div
-              key={item._id}
-              className="bg-[#1f1f1f] p-4 rounded-lg shadow-md flex flex-col gap-2"
-            >
-              <p>
-                <strong>Unit:</strong> {item.unit}
-              </p>
-              <p>
-                <strong>Task:</strong> {item.task}
-              </p>
-              <p>
-                <strong>Assigned To:</strong> {item.assignedTo}
-              </p>
-              <p>
-                <strong>Status:</strong> {item.status}
-              </p>
-              <p>
-                <strong>Deadline:</strong> {item.deadline}
-              </p>
-              <p>
-                <strong>Work Start:</strong> {item.workStart}
-              </p>
-              <p>
-                <strong>Member Update:</strong> {item.memberUpdate}
-              </p>
-              <p>
-                <strong>Last Updated:</strong>{" "}
-                {new Date(item.lastUpdated).toLocaleString()}
-              </p>
-              <div className="flex justify-end gap-2">
-                <button onClick={() => handleEdit(item)}>
-                  <Pencil className="text-yellow-400" />
-                </button>
-                <button onClick={() => handleDelete(item._id)}>
-                  <Trash2 className="text-red-500" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {visibleCount < filteredData.length && (
-          <button
-            onClick={() => setVisibleCount((prev) => prev + 10)}
-            className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Load More
-          </button>
-        )}
-
-        <div className="mt-10">
-          <h2 className="text-2xl font-bold mb-4">Add / Edit Task</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              name="unit"
-              placeholder="Unit"
-              value={form.unit}
-              onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
-            />
-            <input
-              type="text"
-              name="task"
-              placeholder="Task"
-              value={form.task}
-              onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
-            />
-            <input
-              type="text"
-              name="assignedTo"
-              placeholder="Assigned To"
-              value={form.assignedTo}
-              onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
-            />
+        <div className="bg-[#1a1a1a] p-6 rounded-xl mb-10 shadow-lg">
+          <div className="grid sm:grid-cols-4 gap-4">
+            {[
+              "unit",
+              "task",
+              "assignedTo",
+              "deadline",
+              "workStart",
+              "memberUpdate",
+            ].map((name) => (
+              <input
+                key={name}
+                name={name}
+                value={(form as any)[name]}
+                onChange={handleChange}
+                placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
+                className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            ))}
             <select
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="To Do">To Do</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
+              <option>To Do</option>
+              <option>In Progress</option>
+              <option>Done</option>
             </select>
-            <input
-              type="date"
-              name="deadline"
-              placeholder="Deadline"
-              value={form.deadline}
-              onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
-            />
-            <input
-              type="date"
-              name="workStart"
-              placeholder="Work Start"
-              value={form.workStart}
-              onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
-            />
-            <input
-              type="text"
-              name="memberUpdate"
-              placeholder="Member Update"
-              value={form.memberUpdate}
-              onChange={handleChange}
-              className="p-2 rounded bg-gray-800"
-            />
+          </div>
+          <button
+            onClick={handleSubmit}
+            className="mt-4 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" /> {form._id ? "Update" : "Add"}
+          </button>
+        </div>
+
+        <div className="overflow-x-auto rounded-xl border border-gray-700">
+          <table className="min-w-full text-sm text-left text-white">
+            <thead className="bg-[#1f1f1f] text-gray-300">
+              <tr>
+                <th className="px-4 py-3">Unit</th>
+                <th className="px-4 py-3">Task</th>
+                <th className="px-4 py-3">Assigned</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Start</th>
+                <th className="px-4 py-3">Deadline</th>
+                <th className="px-4 py-3">Update</th>
+                <th className="px-4 py-3">Last Updated</th>
+                <th className="px-4 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.slice(0, visibleCount).map((item) => (
+                <tr
+                  key={item._id}
+                  className="border-t border-gray-800 hover:bg-[#232323]"
+                >
+                  <td className="px-4 py-3">{item.unit}</td>
+                  <td className="px-4 py-3">{item.task}</td>
+                  <td className="px-4 py-3">{item.assignedTo}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        item.status === "Done"
+                          ? "bg-green-600"
+                          : item.status === "In Progress"
+                          ? "bg-yellow-600"
+                          : "bg-gray-600"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">{item.workStart}</td>
+                  <td className="px-4 py-3">{item.deadline}</td>
+                  <td className="px-4 py-3">{item.memberUpdate}</td>
+                  <td className="px-4 py-3">
+                    {new Date(item.lastUpdated).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-3 flex justify-center gap-3">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="text-blue-400 hover:text-blue-300"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="text-red-400 hover:text-red-300"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {filteredData.length > visibleCount && (
+          <div className="mt-6 text-center">
             <button
-              onClick={handleSubmit}
-              className="bg-green-600 p-2 rounded flex items-center justify-center gap-2 hover:bg-green-700 transition"
+              onClick={() => setVisibleCount(visibleCount + 10)}
+              className="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg"
             >
-              <Plus /> Submit
+              See More
             </button>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );
