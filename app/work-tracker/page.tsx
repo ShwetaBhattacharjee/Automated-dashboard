@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -39,11 +39,10 @@ export default function WorkTracker() {
     try {
       const res = await axios.get("/api/tracker");
       setData(res.data);
-    } catch (error: AxiosError) {
+    } catch (error: unknown) {
       console.error(
         "Failed to fetch data:",
-        error.message,
-        error.response?.status
+        error instanceof Error ? error.message : String(error)
       );
       setErrorMessage("Failed to load data. Please try again.");
     }
@@ -85,19 +84,16 @@ export default function WorkTracker() {
         memberUpdate: "",
       });
       fetchData();
-    } catch (error: AxiosError) {
+    } catch (error: unknown) {
       console.error(
         "Failed to submit data:",
-        error.message,
-        error.response?.status
+        error instanceof Error ? error.message : String(error)
       );
-      if (error.response?.status === 504) {
-        setErrorMessage(
-          "Request timed out. Please try again or contact support."
-        );
-      } else {
-        setErrorMessage("Failed to add/update item. Please try again.");
-      }
+      setErrorMessage(
+        error instanceof Error && error.message.includes("504")
+          ? "Request timed out. Please try again or contact support."
+          : "Failed to add/update item. Please try again."
+      );
     }
   };
 
@@ -112,11 +108,10 @@ export default function WorkTracker() {
         await axios.delete(`/api/tracker?id=${id}`);
         fetchData();
       }
-    } catch (error: AxiosError) {
+    } catch (error: unknown) {
       console.error(
         "Failed to delete data:",
-        error.message,
-        error.response?.status
+        error instanceof Error ? error.message : String(error)
       );
       setErrorMessage("Failed to delete item. Please try again.");
     }
