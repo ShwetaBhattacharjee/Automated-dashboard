@@ -22,7 +22,6 @@ export default function WorkTracker() {
   const [data, setData] = useState<WorkItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [visibleCount, setVisibleCount] = useState<number>(10);
-  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [form, setForm] = useState<WorkItem>({
     unit: "",
@@ -39,12 +38,8 @@ export default function WorkTracker() {
     try {
       const res = await axios.get("/api/tracker");
       setData(res.data);
-    } catch (error: unknown) {
-      console.error(
-        "Failed to fetch data:",
-        error instanceof Error ? error.message : String(error)
-      );
-      setErrorMessage("Failed to load data. Please try again.");
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
     }
   };
 
@@ -66,7 +61,6 @@ export default function WorkTracker() {
   };
 
   const handleSubmit = async () => {
-    setErrorMessage(""); // Clear previous errors
     try {
       if (form._id) {
         await axios.put(`/api/tracker/${form._id}`, form);
@@ -84,36 +78,23 @@ export default function WorkTracker() {
         memberUpdate: "",
       });
       fetchData();
-    } catch (error: unknown) {
-      console.error(
-        "Failed to submit data:",
-        error instanceof Error ? error.message : String(error)
-      );
-      setErrorMessage(
-        error instanceof Error && error.message.includes("504")
-          ? "Request timed out. Please try again or contact support."
-          : "Failed to add/update item. Please try again."
-      );
+    } catch (error) {
+      console.error("Failed to submit data:", error);
     }
   };
 
   const handleEdit = (item: WorkItem) => {
     setForm(item);
-    setErrorMessage("");
   };
 
   const handleDelete = async (id?: string) => {
     try {
       if (id) {
-        await axios.delete(`/api/tracker?id=${id}`);
+        await axios.delete(`/api/tracker/${id}`);
         fetchData();
       }
-    } catch (error: unknown) {
-      console.error(
-        "Failed to delete data:",
-        error instanceof Error ? error.message : String(error)
-      );
-      setErrorMessage("Failed to delete item. Please try again.");
+    } catch (error) {
+      console.error("Failed to delete data:", error);
     }
   };
 
@@ -147,12 +128,6 @@ export default function WorkTracker() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="mb-6 w-full p-3 rounded-lg bg-[#1f1f1f] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
-        {errorMessage && (
-          <div className="mb-4 p-3 bg-red-600 text-white rounded-lg text-center">
-            {errorMessage}
-          </div>
-        )}
 
         <div className="bg-[#1a1a1a] p-6 rounded-xl mb-10 shadow-lg">
           <div className="grid sm:grid-cols-4 gap-4">
@@ -268,7 +243,7 @@ export default function WorkTracker() {
               onClick={() => setVisibleCount(visibleCount + 10)}
               className="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg"
             >
-              See More..
+              See More...
             </button>
           </div>
         )}
