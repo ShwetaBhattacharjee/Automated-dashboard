@@ -3,20 +3,22 @@ import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 // PUT: Update a specific work tracker item
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
   try {
     const client = await clientPromise;
     const db = client.db("dashboard");
     const collection = db.collection("worktracker");
 
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop(); // Extracts the [id] from the URL
+
     const updatedItem = await req.json();
     updatedItem.lastUpdated = new Date().toISOString().split("T")[0];
 
-    // Avoid updating _id field
-    delete updatedItem._id;
+    delete updatedItem._id; // Avoid updating _id
 
     const result = await collection.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id!) },
       { $set: updatedItem }
     );
 
@@ -28,13 +30,16 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE: Remove a specific work tracker item
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
   try {
     const client = await clientPromise;
     const db = client.db("dashboard");
     const collection = db.collection("worktracker");
 
-    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id!) });
 
     return NextResponse.json(result);
   } catch (error) {
