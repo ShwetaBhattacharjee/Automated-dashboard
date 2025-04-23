@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-// Update a specific work tracker item
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+// PUT: Update a specific work tracker item
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   try {
+    const { params } = context;
     const client = await clientPromise;
     const db = client.db("dashboard");
     const collection = db.collection("worktracker");
@@ -12,7 +13,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const updatedItem = await req.json();
     updatedItem.lastUpdated = new Date().toISOString().split("T")[0];
 
-    // Remove _id to avoid attempting to update the immutable _id field
+    // Avoid updating _id field
     delete updatedItem._id;
 
     const result = await collection.updateOne(
@@ -27,9 +28,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-// Delete a specific work tracker item
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+// DELETE: Remove a specific work tracker item
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
   try {
+    const { params } = context;
     const client = await clientPromise;
     const db = client.db("dashboard");
     const collection = db.collection("worktracker");

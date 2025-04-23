@@ -11,6 +11,9 @@ type WorkItem = {
   assignedTo: string;
   status: string;
   lastUpdated: string;
+  deadline: string;
+  workStart: string;
+  memberUpdate: string;
 };
 
 export default function WorkTracker() {
@@ -25,6 +28,9 @@ export default function WorkTracker() {
     assignedTo: "",
     status: "To Do",
     lastUpdated: new Date().toISOString(),
+    deadline: "",
+    workStart: "",
+    memberUpdate: "",
   });
 
   const fetchData = async () => {
@@ -54,6 +60,9 @@ export default function WorkTracker() {
       assignedTo: "",
       status: "To Do",
       lastUpdated: new Date().toISOString(),
+      deadline: "",
+      workStart: "",
+      memberUpdate: "",
     });
     setEditingId(null);
     fetchData();
@@ -72,7 +81,16 @@ export default function WorkTracker() {
   };
 
   const filteredData = data.filter((item) =>
-    [item.unit, item.task, item.assignedTo, item.status]
+    [
+      item.unit,
+      item.task,
+      item.assignedTo,
+      item.status,
+      item.deadline,
+      item.workStart,
+      item.memberUpdate,
+      new Date(item.lastUpdated).toLocaleString(),
+    ]
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -95,7 +113,14 @@ export default function WorkTracker() {
 
         <div className="bg-[#1a1a1a] p-6 rounded-xl mb-10 shadow-lg">
           <div className="grid sm:grid-cols-4 gap-4">
-            {["unit", "task", "assignedTo"].map((name) => (
+            {[
+              "unit",
+              "task",
+              "assignedTo",
+              "deadline",
+              "workStart",
+              "memberUpdate",
+            ].map((name) => (
               <input
                 key={name}
                 name={name}
@@ -132,7 +157,10 @@ export default function WorkTracker() {
                 <th className="px-4 py-3">Task</th>
                 <th className="px-4 py-3">Assigned</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Updated</th>
+                <th className="px-4 py-3">Start</th>
+                <th className="px-4 py-3">Deadline</th>
+                <th className="px-4 py-3">Update</th>
+                <th className="px-4 py-3">Last Updated</th>
                 <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -158,6 +186,9 @@ export default function WorkTracker() {
                       {item.status}
                     </span>
                   </td>
+                  <td className="px-4 py-3">{item.workStart}</td>
+                  <td className="px-4 py-3">{item.deadline}</td>
+                  <td className="px-4 py-3">{item.memberUpdate}</td>
                   <td className="px-4 py-3">
                     {new Date(item.lastUpdated).toLocaleString()}
                   </td>
