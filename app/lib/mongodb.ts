@@ -11,7 +11,7 @@ let client: MongoClient;
 declare global {
   // Must match the actual `globalThis` object
   // NOT using "var" here avoids the error
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
+  const _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 const globalWithMongo = global as typeof globalThis & {
