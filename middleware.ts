@@ -22,5 +22,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: [ "/dashboard", "/states", "/ai-news-daily", "/contact"],
+  matcher: [ "/dashboard", "/states", "/ai-news-daily", "/contact",  "/work-tracker", "/br", "/influencer"],
 };
