@@ -5,7 +5,6 @@ import { Pencil, Trash2, Plus } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// Type for work item
 type WorkItem = {
   _id?: string;
   unit: string;
@@ -114,6 +113,10 @@ export default function WorkTracker() {
       .includes(searchTerm.toLowerCase())
   );
 
+  const isDeadlineOver = (deadline: string) => {
+    return deadline && new Date(deadline) < new Date(new Date().toDateString());
+  };
+
   return (
     <main className="p-6 min-h-screen bg-[#0f0f0f] text-white">
       <div className="max-w-6xl mx-auto">
@@ -131,16 +134,40 @@ export default function WorkTracker() {
 
         <div className="bg-[#1a1a1a] p-6 rounded-xl mb-10 shadow-lg">
           <div className="grid sm:grid-cols-4 gap-4">
-            {["unit", "task", "assignedTo", "memberUpdate"].map((name) => (
-              <input
-                key={name}
-                name={name}
-                value={form[name as keyof WorkItem]}
-                onChange={handleChange}
-                placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
-                className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            ))}
+            <select
+              name="unit"
+              value={form.unit}
+              onChange={handleChange}
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Unit</option>
+              <option value="AI">AI</option>
+              <option value="INFLUENCER">INFLUENCER</option>
+              <option value="MANAGEMENT">MANAGEMENT</option>
+              <option value="BR UNIT">BR UNIT</option>
+            </select>
+
+            <input
+              name="task"
+              value={form.task}
+              onChange={handleChange}
+              placeholder="Task"
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              name="assignedTo"
+              value={form.assignedTo}
+              onChange={handleChange}
+              placeholder="Assigned To"
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              name="memberUpdate"
+              value={form.memberUpdate}
+              onChange={handleChange}
+              placeholder="Update"
+              className="p-3 rounded-lg bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             <DatePicker
               selected={form.workStart ? new Date(form.workStart) : null}
               onChange={(date) => handleDateChange(date, "workStart")}
@@ -184,7 +211,7 @@ export default function WorkTracker() {
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Start</th>
                 <th className="px-4 py-3">Deadline</th>
-                <th className="px-4 py-3">Update</th>
+                <th className="px-4 py-3">Assigned To</th>
                 <th className="px-4 py-3">Last Updated</th>
                 <th className="px-4 py-3 text-center">Actions</th>
               </tr>
@@ -212,7 +239,15 @@ export default function WorkTracker() {
                     </span>
                   </td>
                   <td className="px-4 py-3">{item.workStart}</td>
-                  <td className="px-4 py-3">{item.deadline}</td>
+                  <td className="px-4 py-3">
+                    {isDeadlineOver(item.deadline) ? (
+                      <span className="text-red-500 font-semibold">
+                        Deadline Over
+                      </span>
+                    ) : (
+                      item.deadline
+                    )}
+                  </td>
                   <td className="px-4 py-3">{item.memberUpdate}</td>
                   <td className="px-4 py-3">
                     {new Date(item.lastUpdated).toLocaleString()}
@@ -220,15 +255,15 @@ export default function WorkTracker() {
                   <td className="px-4 py-3 flex justify-center gap-3">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="text-blue-400 hover:text-blue-300"
+                      className="text-yellow-400 hover:text-yellow-600"
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil />
                     </button>
                     <button
                       onClick={() => handleDelete(item._id)}
-                      className="text-red-400 hover:text-red-300"
+                      className="text-red-400 hover:text-red-600"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 />
                     </button>
                   </td>
                 </tr>
@@ -236,17 +271,6 @@ export default function WorkTracker() {
             </tbody>
           </table>
         </div>
-
-        {filteredData.length > visibleCount && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setVisibleCount(visibleCount + 10)}
-              className="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-lg"
-            >
-              See More..
-            </button>
-          </div>
-        )}
       </div>
     </main>
   );
