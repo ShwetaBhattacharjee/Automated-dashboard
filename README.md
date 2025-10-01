@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# AI Tools Dashboard
 
-First, run the development server:
+**AI Tools Dashboard** is a modern, interactive web application built with **Next.js 15**, **React 19**, **Tailwind CSS**, and **Shadcn UI**. It is designed to centralize multiple AI and internal tools, provide real-time updates, and track work progress across teams.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The dashboard includes features for content generation, article summarization, automation tools, AI news updates, and a collaborative work tracker. It also supports authentication and analytics integration.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌟 Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Tools Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **BR Unit Automation**: Streamlines internal operations for BR Unit, automating data collection and report generation.
+* **Influencer Content Generator**: AI-powered tool for creating engaging LinkedIn posts.
+* **Article Summariser**: Condenses long-form articles into summaries for newsletters and briefs.
+* **Work Tracker**: Monitors tasks, assignments, deadlines, and updates across teams with search and filter functionality.
 
-## Learn More
+### AI News Feed
 
-To learn more about Next.js, take a look at the following resources:
+* Fetches daily AI-related news from a Google Script API.
+* Displays news text and images with graceful error handling.
+* Includes refresh and retry logic for real-time updates.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Authentication & Analytics
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Google OAuth-based authentication for secure login.
+* Google Analytics integration for tracking user activity.
 
-## Deploy on Vercel
+### Technology Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **Frontend**: Next.js 15, React 19, Tailwind CSS, Shadcn UI, Framer Motion
+* **Backend / API**: Next.js API Routes
+* **Authentication**: NextAuth.js (Google Auth)
+* **Data Management**: Axios for API calls, React state management
+* **Utilities**: Lucide icons, React DatePicker for date inputs
+* **Deployment**: Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Responsive Design
+
+* Mobile-first design with responsive table and card views.
+* Interactive buttons, hover effects, and transitions for smooth UX.
+
+## 📦 Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/ai-tools-dashboard.git
+   cd ai-tools-dashboard
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open the app in your browser at [http://localhost:3000](http://localhost:3000).
+
+## 🔧 Usage
+
+* **Dashboard**: Access all AI and internal tools with a single interface.
+* **Work Tracker**: Add, edit, and delete tasks; monitor deadlines; filter by search terms.
+* **AI News Page**: Stay updated with the latest AI advancements, with image previews and auto-refresh.
+
+## 🌐 Deployment
+
+The app is deployed on **Vercel** for seamless hosting:
+[Live Demo](https://rouge-dashboard.vercel.app/)
+
+
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+
+Do you want me to do that?
